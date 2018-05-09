@@ -21,9 +21,6 @@ import static org.junit.Assert.*;
 
 public class DynamicTransitionActionTests {
 	
-    final Enum StateA = State.A, StateB = State.B, StateC = State.C,
-            TriggerX = Trigger.X, TriggerY = Trigger.Y;
-    
     final private TriggerWithParameters1<Integer, State, Trigger> TriggerX1 =
     		new TriggerWithParameters1<Integer, State, Trigger>(Trigger.X, Integer.class);
     

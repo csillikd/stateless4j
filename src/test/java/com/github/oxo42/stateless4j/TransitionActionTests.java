@@ -10,9 +10,6 @@ import com.github.oxo42.stateless4j.delegates.Action;
 
 public class TransitionActionTests {
 
-    final Enum StateA = State.A, StateB = State.B, StateC = State.C,
-            TriggerX = Trigger.X, TriggerY = Trigger.Y;
-
     private class TripwireAction implements Action {
         private boolean beenThere;
 

@@ -10,8 +10,6 @@ import static org.junit.Assert.*;
 
 public class StateMachineTests {
 
-    final Enum StateA = State.A, StateB = State.B, StateC = State.C,
-            TriggerX = Trigger.X, TriggerY = Trigger.Y;
     boolean fired = false;
     String entryArgS = null;
     int entryArgI = 0;
@@ -19,8 +17,8 @@ public class StateMachineTests {
     @Test
     public void CanUseReferenceTypeMarkers() {
         RunSimpleTest(
-                new Enum[]{StateA, StateB, StateC},
-                new Enum[]{TriggerX, TriggerY});
+                new State[] {State.A, State.B, State.C},
+                new Trigger[] {Trigger.X, Trigger.Y});
     }
 
     @Test
@@ -28,7 +26,7 @@ public class StateMachineTests {
         RunSimpleTest(State.values(), Trigger.values());
     }
 
-    <S extends Enum, T extends Enum> void RunSimpleTest(S[] states, T[] transitions) {
+    <S extends Enum<State>, T extends Enum<Trigger>> void RunSimpleTest(S[] states, T[] transitions) {
         S a = states[0];
         S b = states[1];
         T x = transitions[0];
@@ -203,8 +201,6 @@ public class StateMachineTests {
     public void ImplicitReentryIsDisallowed() {
         StateMachineConfig<State, Trigger> config = new StateMachineConfig<>();
 
-        StateMachine<State, Trigger> sm = new StateMachine<>(State.B, config);
-
         config.configure(State.B)
                 .permit(Trigger.X, State.B);
     }
@@ -212,8 +208,6 @@ public class StateMachineTests {
     @Test(expected = IllegalStateException.class)
     public void TriggerParametersAreImmutableOnceSet() {
         StateMachineConfig<State, Trigger> config = new StateMachineConfig<>();
-
-        StateMachine<State, Trigger> sm = new StateMachine<>(State.B, config);
 
         config.setTriggerParameters(Trigger.X, String.class, int.class);
         config.setTriggerParameters(Trigger.X, String.class);
