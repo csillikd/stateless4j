@@ -22,9 +22,10 @@ public class StateMachine<S, T> {
     public static final String TRIGGER_IS_NULL = "trigger is null";
     protected final StateMachineConfig<S, T> config;
     protected final Func<S> stateAccessor;
-    protected final Action1<S> stateMutator;
+    protected final Action1<S> stateMutator;    
     private final Logger logger = LoggerFactory.getLogger(getClass());
     private boolean shouldLog = true;
+    private OnTransitionedEvent<S, T> onTransitionedEvent = new OnTransitionedEvent<S, T>();
     protected Action2<S, T> unhandledTriggerAction = new Action2<S, T>() {
         @Override
         public void doIt(S state, T trigger) {
@@ -227,6 +228,7 @@ public class StateMachine<S, T> {
             getCurrentRepresentation().exit(transition);
             triggerBehaviour.performAction(args);
             setState(destination);
+            onTransitionedEvent.Invoke(transition);
             getCurrentRepresentation().enter(transition, args);
             if (shouldLog && logger.isDebugEnabled()) {
                 getLogger().debug("Fired [{}]--{}-->[{}]",
@@ -295,5 +297,14 @@ public class StateMachine<S, T> {
                 "StateMachine {{ State = %s, PermittedTriggers = {{ %s }}}}",
                 getState(),
                 params.toString());
+    }
+
+    /**
+     * Registers a callback that will be invoked every time the statemachine transitions from one state into another.
+     * @param onTransitionAction The action to execute, accepting the details of the transition.
+     */
+    public void OnTransitioned(Action1<Transition<S, T>> onTransitionAction)
+    {
+        this.onTransitionedEvent.Register(onTransitionAction);
     }
 }
